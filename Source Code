@@ -5,39 +5,77 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema people
+-- Schema mydb
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema people
+-- Schema mydb
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `people` DEFAULT CHARACTER SET latin1 ;
-USE `people` ;
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET latin1 ;
+USE `mydb` ;
 
 -- -----------------------------------------------------
--- Table `people`.`People`
+-- Table `mydb`.`Employee`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `people`.`People` (
-  `idPeople` INT NOT NULL,
-  `name` VARCHAR(45) NULL,
-  `email` VARCHAR(45) NULL,
-  PRIMARY KEY (`idPeople`))
+CREATE TABLE IF NOT EXISTS `mydb`.`Employee` (
+  `EmployeeID` VARCHAR(45) NOT NULL,
+  `Name` VARCHAR(45) NOT NULL,
+  `Employee_Birthdate` DATE NULL,
+  PRIMARY KEY (`EmployeeID`, `Name`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `people`.`Registration`
+-- Table `mydb`.`Role`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `people`.`Registration` (
-  `idRegistration` INT NOT NULL,
-  `Country` VARCHAR(45) NULL,
-  `Registered` DATETIME NULL,
-  `People_idPeople` INT NOT NULL,
-  PRIMARY KEY (`idRegistration`),
-  INDEX `fk_Registration_People_idx` (`People_idPeople` ASC) VISIBLE,
-  CONSTRAINT `fk_Registration_People`
-    FOREIGN KEY (`People_idPeople`)
-    REFERENCES `people`.`People` (`idPeople`)
+CREATE TABLE IF NOT EXISTS `mydb`.`Role` (
+  `Role_Name` VARCHAR(45) NOT NULL,
+  `StartDate` DATETIME NOT NULL,
+  `EndDate` DATETIME NULL,
+  `Employee_EmployeeID` VARCHAR(45) NOT NULL,
+  `Employee_Name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Role_Name`),
+  INDEX `fk_Role_Employee1_idx` (`Employee_EmployeeID` ASC, `Employee_Name` ASC) VISIBLE,
+  CONSTRAINT `fk_Role_Employee1`
+    FOREIGN KEY (`Employee_EmployeeID` , `Employee_Name`)
+    REFERENCES `mydb`.`Employee` (`EmployeeID` , `Name`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Vendor`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Vendor` (
+  `Vendor_Name` VARCHAR(45) NOT NULL,
+  `Vendor_Email` VARCHAR(45) NULL,
+  `Employee_EmployeeID` VARCHAR(45) NOT NULL,
+  `Employee_Name` VARCHAR(45) NOT NULL,
+  INDEX `fk_Vendor_Employee1_idx` (`Employee_EmployeeID` ASC, `Employee_Name` ASC) VISIBLE,
+  PRIMARY KEY (`Vendor_Name`),
+  CONSTRAINT `fk_Vendor_Employee1`
+    FOREIGN KEY (`Employee_EmployeeID` , `Employee_Name`)
+    REFERENCES `mydb`.`Employee` (`EmployeeID` , `Name`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`Dependents`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`Dependents` (
+  `Dependents` INT NOT NULL,
+  `Employee_EmployeeID` VARCHAR(45) NOT NULL,
+  `Employee_Name` VARCHAR(45) NOT NULL,
+  `Dependent_Name` VARCHAR(45) NULL,
+  `Dependent_Birthdate` VARCHAR(45) NULL,
+  INDEX `fk_Dependents_Employee_idx` (`Employee_EmployeeID` ASC, `Employee_Name` ASC) VISIBLE,
+  PRIMARY KEY (`Dependents`),
+  CONSTRAINT `fk_Dependents_Employee`
+    FOREIGN KEY (`Employee_EmployeeID` , `Employee_Name`)
+    REFERENCES `mydb`.`Employee` (`EmployeeID` , `Name`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -46,3 +84,4 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
